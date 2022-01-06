@@ -8,8 +8,7 @@ import {
 	Platform,
 	StyleSheet,
 } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+import { EvilIcons, AntDesign } from "@expo/vector-icons";
 
 export default function HomeScreen({ navigation }) {
 	const DATA = [
@@ -83,11 +82,11 @@ export default function HomeScreen({ navigation }) {
 					<Text style={styles.tweetName} numberOfLines={1}>
 						{item.title}
 					</Text>
-					<Text style={styles.tweetHandle} numberOfLines={1}>
+					<Text style={[styles.textGray, styles.tweetHandle]} numberOfLines={1}>
 						@drehimself
 					</Text>
 					<Text>&middot;</Text>
-					<Text style={styles.tweetHandle} numberOfLines={1}>
+					<Text style={[styles.textGray, styles.tweetHandle]} numberOfLines={1}>
 						9m
 					</Text>
 				</TouchableOpacity>
@@ -205,7 +204,6 @@ const styles = StyleSheet.create({
 	},
 	tweetHandle: {
 		marginHorizontal: 8,
-		color: "gray",
 	},
 	tweetContent: {
 		lineHeight: 20,
