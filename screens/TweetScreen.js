@@ -1,19 +1,20 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import GlobalStyles from "../constants/GlobalStyles";
 import { Entypo, EvilIcons } from "@expo/vector-icons";
 
 export default function TweetScreen() {
 	return (
-		<View style={styles.container}>
-			<View style={[styles.flexRow, styles.profileContainer]}>
-				<TouchableOpacity style={styles.flexRow}>
+		<View style={GlobalStyles.container}>
+			<View style={[GlobalStyles.flexRow, styles.profileContainer]}>
+				<TouchableOpacity style={GlobalStyles.flexRow}>
 					<Image
 						style={styles.avatar}
 						source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
 					/>
 					<View>
 						<Text style={styles.tweetName}>Andre Madarang</Text>
-						<Text style={[styles.textGray, styles.tweetHandle]}>
+						<Text style={[GlobalStyles.textGray, styles.tweetHandle]}>
 							@drehimself
 						</Text>
 					</View>
@@ -31,28 +32,32 @@ export default function TweetScreen() {
 					ratione! Adipisci rem tempore temporibus laborum.
 				</Text>
 			</View>
-			<View style={[styles.flexRow, styles.tweetEngagement]}>
-				<View style={styles.flexRow}>
+			<View style={[GlobalStyles.flexRow, styles.tweetEngagement]}>
+				<View style={GlobalStyles.flexRow}>
 					<Text style={styles.tweetEngagementNumber}>628</Text>
-					<Text style={[styles.textGray, styles.tweetEngagementLabel]}>
+					<Text style={[GlobalStyles.textGray, styles.tweetEngagementLabel]}>
 						Retweets
 					</Text>
 				</View>
-				<View style={[styles.ml4, styles.flexRow]}>
+				<View style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 					<Text style={styles.tweetEngagementNumber}>38</Text>
-					<Text style={[styles.textGray, styles.tweetEngagementLabel]}>
+					<Text style={[GlobalStyles.textGray, styles.tweetEngagementLabel]}>
 						Quote Tweets
 					</Text>
 				</View>
-				<View style={[styles.ml4, styles.flexRow]}>
+				<View style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 					<Text style={styles.tweetEngagementNumber}>2,934</Text>
-					<Text style={[styles.textGray, styles.tweetEngagementLabel]}>
+					<Text style={[GlobalStyles.textGray, styles.tweetEngagementLabel]}>
 						Likes
 					</Text>
 				</View>
 			</View>
 			<View
-				style={[styles.flexRow, styles.spaceAround, styles.tweetEngagement]}
+				style={[
+					GlobalStyles.flexRow,
+					GlobalStyles.spaceAround,
+					styles.tweetEngagement,
+				]}
 			>
 				<TouchableOpacity>
 					<EvilIcons name="comment" size={32} color="gray" />
@@ -76,22 +81,6 @@ export default function TweetScreen() {
 }
 
 const styles = StyleSheet.create({
-	ml4: {
-		marginLeft: 16,
-	},
-	flexRow: {
-		flexDirection: "row",
-	},
-	spaceAround: {
-		justifyContent: "space-around",
-	},
-	container: {
-		flex: 1,
-		backgroundColor: "white",
-	},
-	textGray: {
-		color: "gray",
-	},
 	avatar: {
 		width: 50,
 		height: 50,

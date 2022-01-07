@@ -8,6 +8,7 @@ import {
 	Platform,
 	StyleSheet,
 } from "react-native";
+import GlobalStyles from "../constants/GlobalStyles";
 import { EvilIcons, AntDesign } from "@expo/vector-icons";
 
 export default function HomeScreen({ navigation }) {
@@ -67,7 +68,7 @@ export default function HomeScreen({ navigation }) {
 	}
 
 	const renderItem = ({ item }) => (
-		<View style={[styles.flexRow, styles.tweetContainer]}>
+		<View style={[GlobalStyles.flexRow, styles.tweetContainer]}>
 			<TouchableOpacity onPress={() => gotoProfile()}>
 				<Image
 					style={styles.avatar}
@@ -76,17 +77,23 @@ export default function HomeScreen({ navigation }) {
 			</TouchableOpacity>
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
-					style={styles.flexRow}
+					style={GlobalStyles.flexRow}
 					onPress={() => gotoSingleTweet()}
 				>
 					<Text style={styles.tweetName} numberOfLines={1}>
 						{item.title}
 					</Text>
-					<Text style={[styles.textGray, styles.tweetHandle]} numberOfLines={1}>
+					<Text
+						style={[GlobalStyles.textGray, styles.tweetHandle]}
+						numberOfLines={1}
+					>
 						@drehimself
 					</Text>
 					<Text>&middot;</Text>
-					<Text style={[styles.textGray, styles.tweetHandle]} numberOfLines={1}>
+					<Text
+						style={[GlobalStyles.textGray, styles.tweetHandle]}
+						numberOfLines={1}
+					>
 						9m
 					</Text>
 				</TouchableOpacity>
@@ -100,35 +107,35 @@ export default function HomeScreen({ navigation }) {
 						facere.
 					</Text>
 				</TouchableOpacity>
-				<View style={[styles.flexRow, styles.tweetEngagement]}>
-					<TouchableOpacity style={styles.flexRow}>
+				<View style={[GlobalStyles.flexRow, styles.tweetEngagement]}>
+					<TouchableOpacity style={GlobalStyles.flexRow}>
 						<EvilIcons
 							name="comment"
 							size={22}
 							color="gray"
 							style={{ marginRight: 2 }}
 						/>
-						<Text style={styles.textGray}>456</Text>
+						<Text style={GlobalStyles.textGray}>456</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={[styles.ml4, styles.flexRow]}>
+					<TouchableOpacity style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 						<EvilIcons
 							name="retweet"
 							size={22}
 							color="gray"
 							style={{ marginRight: 2 }}
 						/>
-						<Text style={styles.textGray}>32</Text>
+						<Text style={GlobalStyles.textGray}>32</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={[styles.ml4, styles.flexRow]}>
+					<TouchableOpacity style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 						<EvilIcons
 							name="heart"
 							size={22}
 							color="gray"
 							style={{ marginRight: 2 }}
 						/>
-						<Text style={styles.textGray}>4,456</Text>
+						<Text style={GlobalStyles.textGray}>4,456</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={[styles.ml4, styles.flexRow]}>
+					<TouchableOpacity style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 						<EvilIcons
 							name={Platform.OS === "ios" ? "share-apple" : "share-google"}
 							size={22}
@@ -142,7 +149,7 @@ export default function HomeScreen({ navigation }) {
 	);
 
 	return (
-		<View style={styles.container}>
+		<View style={GlobalStyles.container}>
 			<FlatList
 				data={DATA}
 				renderItem={renderItem}
@@ -160,19 +167,6 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-	ml4: {
-		marginLeft: 16,
-	},
-	flexRow: {
-		flexDirection: "row",
-	},
-	container: {
-		flex: 1,
-		backgroundColor: "white",
-	},
-	textGray: {
-		color: "gray",
-	},
 	floatingButton: {
 		width: 60,
 		height: 60,
