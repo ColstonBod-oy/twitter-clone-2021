@@ -6,7 +6,13 @@ import { Entypo, EvilIcons } from "@expo/vector-icons";
 export default function TweetScreen() {
 	return (
 		<View style={GlobalStyles.container}>
-			<View style={[GlobalStyles.flexRow, styles.profileContainer]}>
+			<View
+				style={[
+					GlobalStyles.flexRow,
+					GlobalStyles.spaceBetween,
+					styles.profileContainer,
+				]}
+			>
 				<TouchableOpacity style={GlobalStyles.flexRow}>
 					<Image
 						style={styles.avatar}
@@ -88,7 +94,6 @@ const styles = StyleSheet.create({
 		borderRadius: 25,
 	},
 	profileContainer: {
-		justifyContent: "space-between",
 		paddingHorizontal: 10,
 		paddingVertical: 12,
 	},

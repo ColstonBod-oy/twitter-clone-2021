@@ -17,4 +17,11 @@ export default StyleSheet.create({
 	spaceAround: {
 		justifyContent: "space-around",
 	},
+	spaceBetween: {
+		justifyContent: "space-between",
+	},
+	tweetSeparator: {
+		borderBottomWidth: 1,
+		borderBottomColor: "#e5e7eb",
+	},
 });
