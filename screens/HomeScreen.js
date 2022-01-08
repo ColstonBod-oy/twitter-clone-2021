@@ -1,8 +1,8 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
-import { AntDesign } from "@expo/vector-icons";
 import TweetsList from "../components/TweetsList";
+import FloatingButton from "../components/FloatingButton";
 
 export default function HomeScreen({ navigation }) {
 	const DATA = [
@@ -48,33 +48,10 @@ export default function HomeScreen({ navigation }) {
 		},
 	];
 
-	function gotoNewTweet() {
-		navigation.navigate("New Tweet Screen");
-	}
-
 	return (
 		<View style={GlobalStyles.container}>
 			<TweetsList data={DATA} navigation={navigation} />
-			<TouchableOpacity
-				style={styles.floatingButton}
-				onPress={() => gotoNewTweet()}
-			>
-				<AntDesign name="plus" size={24} color="black" />
-			</TouchableOpacity>
+			<FloatingButton navigation={navigation} />
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	floatingButton: {
-		width: 60,
-		height: 60,
-		borderRadius: 30,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#1d9bf1",
-		position: "absolute",
-		bottom: 20,
-		right: 12,
-	},
-});
