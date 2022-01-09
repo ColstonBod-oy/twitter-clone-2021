@@ -10,7 +10,7 @@ export default function TweetScreen() {
 				style={[
 					GlobalStyles.flexRow,
 					GlobalStyles.spaceBetween,
-					styles.profileContainer,
+					styles.tweetContainer,
 				]}
 			>
 				<TouchableOpacity style={GlobalStyles.flexRow}>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 		marginRight: 8,
 		borderRadius: 25,
 	},
-	profileContainer: {
+	tweetContainer: {
 		paddingHorizontal: 10,
 		paddingVertical: 12,
 	},

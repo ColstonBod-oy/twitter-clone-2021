@@ -11,7 +11,12 @@ import {
 import GlobalStyles from "../constants/GlobalStyles";
 import { EvilIcons } from "@expo/vector-icons";
 
-export default function TweetsList({ data, navigation }) {
+export default function TweetsList({
+	style,
+	data,
+	ListHeaderComponent,
+	navigation,
+}) {
 	function gotoProfile() {
 		navigation.navigate("Profile Screen");
 	}
@@ -103,9 +108,11 @@ export default function TweetsList({ data, navigation }) {
 
 	return (
 		<FlatList
+			style={style}
 			data={data}
 			renderItem={renderItem}
 			keyExtractor={(item) => item.id}
+			ListHeaderComponent={ListHeaderComponent}
 			ItemSeparatorComponent={() => (
 				<View style={GlobalStyles.tweetSeparator} />
 			)}
