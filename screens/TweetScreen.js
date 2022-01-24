@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
 import { Entypo, EvilIcons } from "@expo/vector-icons";
 
-export default function TweetScreen() {
+export default function TweetScreen({ navigation }) {
+	function gotoProfile() {
+		navigation.navigate("Profile Screen");
+	}
+
 	return (
 		<View style={GlobalStyles.container}>
 			<View
@@ -13,7 +17,10 @@ export default function TweetScreen() {
 					styles.tweetContainer,
 				]}
 			>
-				<TouchableOpacity style={GlobalStyles.flexRow}>
+				<TouchableOpacity
+					style={GlobalStyles.flexRow}
+					onPress={() => gotoProfile()}
+				>
 					<Image
 						style={styles.avatar}
 						source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}

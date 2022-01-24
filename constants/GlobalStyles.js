@@ -17,6 +17,9 @@ export default StyleSheet.create({
 	textBlue: {
 		color: "#1d9bf1",
 	},
+	textRed: {
+		color: "red",
+	},
 	spaceAround: {
 		justifyContent: "space-around",
 	},
