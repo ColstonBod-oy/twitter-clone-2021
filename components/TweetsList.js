@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
 import { EvilIcons } from "@expo/vector-icons";
+import { formatDistanceToNowStrict } from "date-fns";
+import locale from "date-fns/locale/en-US";
+import formatDistance from "../utils/customFormatDistance";
 
 export default function TweetsList({
 	style,
@@ -25,13 +28,10 @@ export default function TweetsList({
 		navigation.navigate("Tweet Screen");
 	}
 
-	const renderItem = ({ item }) => (
+	const renderItem = ({ item: tweet }) => (
 		<View style={[GlobalStyles.flexRow, styles.tweetContainer]}>
 			<TouchableOpacity onPress={() => gotoProfile()}>
-				<Image
-					style={styles.avatar}
-					source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
-				/>
+				<Image style={styles.avatar} source={{ uri: tweet.user.avatar }} />
 			</TouchableOpacity>
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
@@ -39,31 +39,33 @@ export default function TweetsList({
 					onPress={() => gotoSingleTweet()}
 				>
 					<Text style={styles.tweetName} numberOfLines={1}>
-						{item.title}
+						{tweet.user.name}
 					</Text>
 					<Text
 						style={[GlobalStyles.textGray, styles.tweetHandle]}
 						numberOfLines={1}
 					>
-						@drehimself
+						@{tweet.user.username}
 					</Text>
 					<Text>&middot;</Text>
 					<Text
 						style={[GlobalStyles.textGray, styles.tweetHandle]}
 						numberOfLines={1}
 					>
-						9m
+						{formatDistanceToNowStrict(new Date(tweet.created_at), {
+							addSuffix: false,
+							locale: {
+								...locale,
+								formatDistance,
+							},
+						})}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={styles.tweetContentContainer}
 					onPress={() => gotoSingleTweet()}
 				>
-					<Text style={styles.tweetContent}>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-						ipsam blanditiis, quasi et id totam natus vero facilis reiciendis
-						facere.
-					</Text>
+					<Text style={styles.tweetContent}>{tweet.body}</Text>
 				</TouchableOpacity>
 				<View style={[GlobalStyles.flexRow, styles.tweetEngagement]}>
 					<TouchableOpacity style={GlobalStyles.flexRow}>
