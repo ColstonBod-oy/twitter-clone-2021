@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -7,19 +7,44 @@ import {
 	Image,
 	Platform,
 	TouchableOpacity,
+	ActivityIndicator,
 } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
 import { EvilIcons } from "@expo/vector-icons";
 import { formatDistanceToNowStrict } from "date-fns";
 import locale from "date-fns/locale/en-US";
 import formatDistance from "../utils/customFormatDistance";
+import axios from "axios";
 
-export default function TweetsList({
-	style,
-	data,
-	ListHeaderComponent,
-	navigation,
-}) {
+export default function TweetsList({ style, ListHeaderComponent, navigation }) {
+	const [data, setData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isRefreshing, setIsRefreshing] = useState(false);
+
+	useEffect(() => {
+		getAllTweets();
+	}, []);
+
+	function getAllTweets() {
+		axios
+			.get("http://10.0.2.2:8000/api/tweets")
+			.then((response) => {
+				setData(response.data);
+				setIsLoading(false);
+				setIsRefreshing(false);
+			})
+			.catch((error) => {
+				console.log(error);
+				setIsLoading(false);
+				setIsRefreshing(false);
+			});
+	}
+
+	function handleRefresh() {
+		getAllTweets();
+		setIsRefreshing(true);
+	}
+
 	function gotoProfile() {
 		navigation.navigate("Profile Screen");
 	}
@@ -109,16 +134,24 @@ export default function TweetsList({
 	);
 
 	return (
-		<FlatList
-			style={style}
-			data={data}
-			renderItem={renderItem}
-			keyExtractor={(item) => item.id}
-			ListHeaderComponent={ListHeaderComponent}
-			ItemSeparatorComponent={() => (
-				<View style={GlobalStyles.tweetSeparator} />
+		<View>
+			{isLoading ? (
+				<ActivityIndicator size="large" />
+			) : (
+				<FlatList
+					style={style}
+					data={data}
+					renderItem={renderItem}
+					keyExtractor={(item) => item.id.toString()}
+					ListHeaderComponent={ListHeaderComponent}
+					ItemSeparatorComponent={() => (
+						<View style={GlobalStyles.tweetSeparator} />
+					)}
+					refreshing={isRefreshing}
+					onRefresh={handleRefresh}
+				/>
 			)}
-		/>
+		</View>
 	);
 }
 
