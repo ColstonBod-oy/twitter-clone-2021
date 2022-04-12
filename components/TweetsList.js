@@ -20,16 +20,25 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 	const [data, setData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
+	const [page, setPage] = useState(1);
+	const [isEndOfScrolling, setIsEndOfScrolling] = useState(false);
 
 	useEffect(() => {
 		getAllTweets();
-	}, []);
+	}, [page]);
 
 	function getAllTweets() {
 		axios
-			.get("http://10.0.2.2:8000/api/tweets")
+			.get(`http://10.0.2.2:8000/api/tweets?page=${page}`)
 			.then((response) => {
-				setData(response.data);
+				page === 1
+					? setData(response.data.data)
+					: setData([...data, ...response.data.data]);
+
+				if (!response.data.next_page_url) {
+					setIsEndOfScrolling(true);
+				}
+
 				setIsLoading(false);
 				setIsRefreshing(false);
 			})
@@ -41,8 +50,14 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 	}
 
 	function handleRefresh() {
-		getAllTweets();
+		setPage(1);
+		setIsEndOfScrolling(false);
 		setIsRefreshing(true);
+		getAllTweets();
+	}
+
+	function handleEnd() {
+		setPage(page + 1);
 	}
 
 	function gotoProfile() {
@@ -136,19 +151,26 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 	return (
 		<View>
 			{isLoading ? (
-				<ActivityIndicator size="large" />
+				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<FlatList
 					style={style}
 					data={data}
 					renderItem={renderItem}
-					keyExtractor={(item) => item.id.toString()}
+					keyExtractor={(item, index) => String(index)}
 					ListHeaderComponent={ListHeaderComponent}
 					ItemSeparatorComponent={() => (
 						<View style={GlobalStyles.tweetSeparator} />
 					)}
 					refreshing={isRefreshing}
 					onRefresh={handleRefresh}
+					onEndReached={handleEnd}
+					onEndReachedThreshold={0}
+					ListFooterComponent={() =>
+						!isEndOfScrolling && (
+							<ActivityIndicator size="large" color="#007aff" />
+						)
+					}
 				/>
 			)}
 		</View>
