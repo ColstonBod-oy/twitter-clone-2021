@@ -14,10 +14,10 @@ import { EvilIcons } from "@expo/vector-icons";
 import { formatDistanceToNowStrict } from "date-fns";
 import locale from "date-fns/locale/en-US";
 import formatDistance from "../utils/customFormatDistance";
-import axios from "axios";
+import axiosConfig from "../utils/axiosConfig";
 
 export default function TweetsList({ style, ListHeaderComponent, navigation }) {
-	const [data, setData] = useState([]);
+	const [tweets, setTweets] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [page, setPage] = useState(1);
@@ -28,12 +28,12 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 	}, [page]);
 
 	function getAllTweets() {
-		axios
-			.get(`http://10.0.2.2:8000/api/tweets?page=${page}`)
+		axiosConfig
+			.get(`/tweets?page=${page}`)
 			.then((response) => {
 				page === 1
-					? setData(response.data.data)
-					: setData([...data, ...response.data.data]);
+					? setTweets(response.data.data)
+					: setTweets([...tweets, ...response.data.data]);
 
 				if (!response.data.next_page_url) {
 					setIsEndOfScrolling(true);
@@ -64,8 +64,8 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 		navigation.navigate("Profile Screen");
 	}
 
-	function gotoSingleTweet() {
-		navigation.navigate("Tweet Screen");
+	function gotoSingleTweet(tweetId) {
+		navigation.navigate("Tweet Screen", { tweetId });
 	}
 
 	const renderItem = ({ item: tweet }) => (
@@ -76,7 +76,7 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
 					style={GlobalStyles.flexRow}
-					onPress={() => gotoSingleTweet()}
+					onPress={() => gotoSingleTweet(tweet.id)}
 				>
 					<Text style={styles.tweetName} numberOfLines={1}>
 						{tweet.user.name}
@@ -103,7 +103,7 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={styles.tweetContentContainer}
-					onPress={() => gotoSingleTweet()}
+					onPress={() => gotoSingleTweet(tweet.id)}
 				>
 					<Text style={styles.tweetContent}>{tweet.body}</Text>
 				</TouchableOpacity>
@@ -149,13 +149,13 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 	);
 
 	return (
-		<View>
+		<>
 			{isLoading ? (
 				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<FlatList
 					style={style}
-					data={data}
+					data={tweets}
 					renderItem={renderItem}
 					keyExtractor={(item, index) => String(index)}
 					ListHeaderComponent={ListHeaderComponent}
@@ -173,7 +173,7 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 					}
 				/>
 			)}
-		</View>
+		</>
 	);
 }
 
