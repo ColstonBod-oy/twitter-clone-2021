@@ -3,17 +3,41 @@ import {
 	View,
 	Text,
 	TouchableOpacity,
+	Alert,
 	Image,
 	TextInput,
 	StyleSheet,
+	ActivityIndicator,
 } from "react-native";
 import GlobalStyles from "../constants/GlobalStyles";
+import axiosConfig from "../utils/axiosConfig";
 
 export default function NewTweetScreen({ navigation }) {
 	const [tweetText, setTweetText] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	function sendTweet() {
-		navigation.navigate("Bottom Tab");
+		if (tweetText.length === 0) {
+			Alert.alert("Please enter a tweet");
+			return;
+		}
+
+		setIsLoading(true);
+
+		axiosConfig
+			.post("/tweets", {
+				body: tweetText,
+			})
+			.then((response) => {
+				navigation.navigate("Home2", {
+					newTweet: response.data.created_at,
+				});
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.log(error);
+				setIsLoading(false);
+			});
 	}
 
 	return (
@@ -21,6 +45,7 @@ export default function NewTweetScreen({ navigation }) {
 			<View
 				style={[
 					GlobalStyles.flexRow,
+					GlobalStyles.alignCenter,
 					GlobalStyles.spaceBetween,
 					styles.tweetButtonContainer,
 				]}
@@ -34,12 +59,22 @@ export default function NewTweetScreen({ navigation }) {
 				>
 					Characters left: {280 - tweetText.length}
 				</Text>
-				<TouchableOpacity
-					style={styles.tweetButton}
-					onPress={() => sendTweet()}
-				>
-					<Text style={styles.tweetButtonText}>Tweet</Text>
-				</TouchableOpacity>
+				<View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+					{isLoading && (
+						<ActivityIndicator
+							size="small"
+							color="gray"
+							style={{ marginRight: 8 }}
+						/>
+					)}
+					<TouchableOpacity
+						style={styles.tweetButton}
+						onPress={() => sendTweet()}
+						disabled={isLoading}
+					>
+						<Text style={styles.tweetButtonText}>Tweet</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 			<View style={[GlobalStyles.flexRow, styles.tweetBoxContainer]}>
 				<Image
@@ -91,7 +126,6 @@ const styles = StyleSheet.create({
 	tweetButtonContainer: {
 		paddingHorizontal: 6,
 		paddingVertical: 4,
-		alignItems: "center",
 	},
 	tweetBoxContainer: {
 		paddingTop: 10,

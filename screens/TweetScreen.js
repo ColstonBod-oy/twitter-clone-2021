@@ -91,7 +91,13 @@ export default function TweetScreen({ route, navigation }) {
 							</Text>
 						</View>
 					</View>
-					<View style={[GlobalStyles.flexRow, styles.tweetEngagement]}>
+					<View
+						style={[
+							GlobalStyles.flexRow,
+							GlobalStyles.alignCenter,
+							styles.tweetEngagement,
+						]}
+					>
 						<View style={GlobalStyles.flexRow}>
 							<Text style={styles.tweetEngagementNumber}>628</Text>
 							<Text
@@ -120,6 +126,7 @@ export default function TweetScreen({ route, navigation }) {
 					<View
 						style={[
 							GlobalStyles.flexRow,
+							GlobalStyles.alignCenter,
 							GlobalStyles.spaceAround,
 							styles.tweetEngagement,
 						]}
@@ -182,7 +189,6 @@ const styles = StyleSheet.create({
 		marginRight: 6,
 	},
 	tweetEngagement: {
-		alignItems: "center",
 		paddingHorizontal: 10,
 		paddingVertical: 12,
 		borderBottomWidth: 1,

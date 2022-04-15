@@ -20,6 +20,9 @@ export default StyleSheet.create({
 	textRed: {
 		color: "red",
 	},
+	alignCenter: {
+		alignItems: "center",
+	},
 	spaceAround: {
 		justifyContent: "space-around",
 	},

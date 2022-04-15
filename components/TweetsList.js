@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -16,16 +16,29 @@ import locale from "date-fns/locale/en-US";
 import formatDistance from "../utils/customFormatDistance";
 import axiosConfig from "../utils/axiosConfig";
 
-export default function TweetsList({ style, ListHeaderComponent, navigation }) {
+export default function TweetsList({
+	style,
+	ListHeaderComponent,
+	newTweet,
+	navigation,
+}) {
 	const [tweets, setTweets] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [page, setPage] = useState(1);
 	const [isEndOfScrolling, setIsEndOfScrolling] = useState(false);
+	const flatListRef = useRef();
 
 	useEffect(() => {
 		getAllTweets();
 	}, [page]);
+
+	useEffect(() => {
+		if (newTweet) {
+			getNewTweet();
+			flatListRef.current.scrollToOffset({ offset: 0 });
+		}
+	}, [newTweet]);
 
 	function getAllTweets() {
 		axiosConfig
@@ -45,6 +58,23 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 			.catch((error) => {
 				console.log(error);
 				setIsLoading(false);
+				setIsRefreshing(false);
+			});
+	}
+
+	function getNewTweet() {
+		setPage(1);
+		setIsEndOfScrolling(false);
+		setIsRefreshing(true);
+
+		axiosConfig
+			.get("/tweets")
+			.then((response) => {
+				setTweets(response.data.data);
+				setIsRefreshing(false);
+			})
+			.catch((error) => {
+				console.log(error);
 				setIsRefreshing(false);
 			});
 	}
@@ -107,7 +137,13 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 				>
 					<Text style={styles.tweetContent}>{tweet.body}</Text>
 				</TouchableOpacity>
-				<View style={[GlobalStyles.flexRow, styles.tweetEngagement]}>
+				<View
+					style={[
+						GlobalStyles.flexRow,
+						GlobalStyles.alignCenter,
+						styles.tweetEngagement,
+					]}
+				>
 					<TouchableOpacity style={GlobalStyles.flexRow}>
 						<EvilIcons
 							name="comment"
@@ -154,6 +190,7 @@ export default function TweetsList({ style, ListHeaderComponent, navigation }) {
 				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<FlatList
+					ref={flatListRef}
 					style={style}
 					data={tweets}
 					renderItem={renderItem}
@@ -202,7 +239,6 @@ const styles = StyleSheet.create({
 		marginTop: 4,
 	},
 	tweetEngagement: {
-		alignItems: "center",
 		marginTop: 12,
 	},
 });
