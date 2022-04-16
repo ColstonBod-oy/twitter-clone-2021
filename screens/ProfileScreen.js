@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
 	View,
 	Text,
@@ -10,9 +10,29 @@ import {
 import GlobalStyles from "../constants/GlobalStyles";
 import TweetsList from "../components/TweetsList";
 import { EvilIcons } from "@expo/vector-icons";
+import format from "date-fns/format";
+import { parseISO } from "date-fns/esm";
+import axiosConfig from "../utils/axiosConfig";
 
-export default function ProfileScreen({ navigation }) {
-	const DATA = [
+export default function ProfileScreen({ route, navigation }) {
+	const [user, setUser] = useState({});
+
+	useEffect(() => {
+		getUserProfile();
+	}, []);
+
+	function getUserProfile() {
+		axiosConfig
+			.get(`/users/${route.params.userId}`)
+			.then((response) => {
+				setUser(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
+
+	/* const DATA = [
 		{
 			id: "1",
 			title: "First Item",
@@ -53,7 +73,7 @@ export default function ProfileScreen({ navigation }) {
 			id: "10",
 			title: "Tenth Item",
 		},
-	];
+	]; */
 
 	const profileHeader = () => (
 		<View style={GlobalStyles.container}>
@@ -70,39 +90,39 @@ export default function ProfileScreen({ navigation }) {
 					styles.avatarContainer,
 				]}
 			>
-				<Image
-					style={styles.avatar}
-					source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
-				/>
+				<Image style={styles.avatar} source={{ uri: user.avatar }} />
 				<TouchableOpacity style={styles.followButton}>
 					<Text style={styles.followButtonText}>Follow</Text>
 				</TouchableOpacity>
 			</View>
 			<View style={styles.profileContainer}>
-				<Text style={styles.profileName}>Andre Madarang</Text>
-				<Text style={styles.profileHandle}>@drehimself</Text>
+				<Text style={styles.profileName}>{user.name}</Text>
+				<Text style={styles.profileHandle}>@{user.username}</Text>
 			</View>
 			<View style={styles.descriptionContainer}>
-				<Text style={styles.description}>
-					CEO of CEOs. PhD, MSc, SEO, HTML, CSS, JS Evangelist Pro Expert S Rank
-					Elite Best of the best.
-				</Text>
+				<Text style={styles.description}>{user.profile}</Text>
 			</View>
 			<View style={[GlobalStyles.flexRow, styles.locationContainer]}>
 				<EvilIcons name="location" size={24} color="gray" />
-				<Text style={GlobalStyles.textGray}>Toronto, Canada</Text>
+				<Text style={GlobalStyles.textGray}>{user.location}</Text>
 			</View>
 			<View style={[GlobalStyles.flexRow, styles.linkContainer]}>
 				<TouchableOpacity
 					style={GlobalStyles.flexRow}
-					onPress={() => Linking.openURL("https://laracasts.com")}
+					onPress={() => Linking.openURL(user.link)}
 				>
 					<EvilIcons name="link" size={24} color="gray" />
-					<Text style={GlobalStyles.textBlue}>laracasts.com</Text>
+					<Text style={GlobalStyles.textBlue}>{user.linkText}</Text>
 				</TouchableOpacity>
 				<View style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 					<EvilIcons name="calendar" size={24} color="gray" />
-					<Text style={GlobalStyles.textGray}>Joined March 2009</Text>
+					<Text style={GlobalStyles.textGray}>
+						Joined{" "}
+						{format(
+							parseISO(user.created_at, "yyyy-MM-dd", new Date()),
+							"MMM yyyy"
+						)}
+					</Text>
 				</View>
 			</View>
 			<View style={[GlobalStyles.flexRow, styles.followContainer]}>
@@ -122,7 +142,7 @@ export default function ProfileScreen({ navigation }) {
 	return (
 		<TweetsList
 			style={GlobalStyles.container}
-			data={DATA}
+			//data={DATA}
 			ListHeaderComponent={profileHeader}
 			navigation={navigation}
 		/>
