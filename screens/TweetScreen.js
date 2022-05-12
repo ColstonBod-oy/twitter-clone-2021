@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
 	View,
 	Text,
@@ -10,28 +10,14 @@ import {
 import GlobalStyles from "../constants/GlobalStyles";
 import { Entypo, EvilIcons } from "@expo/vector-icons";
 import format from "date-fns/format";
-import axiosConfig from "../utils/axiosConfig";
+import useFetch from "../utils/hooks/useFetch";
 
 export default function TweetScreen({ route, navigation }) {
-	const [tweet, setTweet] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		getTweet();
-	}, []);
-
-	function getTweet() {
-		axiosConfig
-			.get(`/tweets/${route.params.tweetId}`)
-			.then((response) => {
-				setTweet(response.data);
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.log(error);
-				setIsLoading(false);
-			});
-	}
+	const {
+		status,
+		data: tweet,
+		error,
+	} = useFetch(`/tweets/${route.params.tweetId}`);
 
 	function gotoProfile(userId) {
 		navigation.navigate("Profile Screen", { userId });
@@ -39,7 +25,9 @@ export default function TweetScreen({ route, navigation }) {
 
 	return (
 		<View style={GlobalStyles.container}>
-			{isLoading ? (
+			{status === "error" ? (
+				<Text style={GlobalStyles.textRed}>{error.message}</Text>
+			) : status === "fetching" ? (
 				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<>
@@ -87,7 +75,9 @@ export default function TweetScreen({ route, navigation }) {
 								&middot;
 							</Text>
 							<Text style={[GlobalStyles.textBlue, styles.tweetTimestampText]}>
-								Twitter for iPhone
+								{Platform.OS === "ios"
+									? "Twitter for iPhone"
+									: "Twitter for Android"}
 							</Text>
 						</View>
 					</View>
