@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
 	View,
 	Text,
@@ -12,28 +12,14 @@ import GlobalStyles from "../constants/GlobalStyles";
 import TweetsList from "../components/TweetsList";
 import { EvilIcons } from "@expo/vector-icons";
 import format from "date-fns/format";
-import axiosConfig from "../utils/axiosConfig";
+import useFetch from "../utils/hooks/useFetch";
 
 export default function ProfileScreen({ route, navigation }) {
-	const [user, setUser] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		getUserProfile();
-	}, []);
-
-	function getUserProfile() {
-		axiosConfig
-			.get(`/users/${route.params.userId}`)
-			.then((response) => {
-				setUser(response.data);
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.log(error);
-				setIsLoading(false);
-			});
-	}
+	const {
+		status,
+		data: user,
+		error,
+	} = useFetch(`/users/${route.params.userId}`);
 
 	/* const DATA = [
 		{
@@ -80,7 +66,9 @@ export default function ProfileScreen({ route, navigation }) {
 
 	const profileHeader = () => (
 		<View style={GlobalStyles.container}>
-			{isLoading ? (
+			{status === "error" ? (
+				<Text style={GlobalStyles.textRed}>{error.message}</Text>
+			) : status === "fetching" ? (
 				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<>
