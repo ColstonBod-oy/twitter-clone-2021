@@ -7,7 +7,11 @@ import FloatingButton from "../components/FloatingButton";
 export default function HomeScreen({ route, navigation }) {
 	return (
 		<View style={GlobalStyles.container}>
-			<TweetsList newTweet={route.params?.newTweet} navigation={navigation} />
+			<TweetsList
+				url={"/tweets"}
+				newTweet={route.params?.newTweet}
+				navigation={navigation}
+			/>
 			<FloatingButton navigation={navigation} />
 		</View>
 	);

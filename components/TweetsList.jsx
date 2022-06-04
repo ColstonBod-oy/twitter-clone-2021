@@ -17,6 +17,8 @@ import formatDistance from "../utils/customFormatDistance";
 import axiosConfig from "../utils/axiosConfig";
 
 export default function TweetsList({
+	url,
+	user,
 	style,
 	ListHeaderComponent,
 	newTweet,
@@ -42,7 +44,7 @@ export default function TweetsList({
 
 	function getAllTweets() {
 		axiosConfig
-			.get(`/tweets?page=${page}`)
+			.get(`${url}?page=${page}`)
 			.then((response) => {
 				page === 1
 					? setTweets(response.data.data)
@@ -68,7 +70,7 @@ export default function TweetsList({
 		setIsRefreshing(true);
 
 		axiosConfig
-			.get("/tweets")
+			.get(url)
 			.then((response) => {
 				setTweets(response.data.data);
 				setIsRefreshing(false);
@@ -100,8 +102,13 @@ export default function TweetsList({
 
 	const renderItem = ({ item: tweet }) => (
 		<View style={[GlobalStyles.flexRow, styles.tweetContainer]}>
-			<TouchableOpacity onPress={() => gotoProfile(tweet.user.id)}>
-				<Image style={styles.avatar} source={{ uri: tweet.user.avatar }} />
+			<TouchableOpacity
+				onPress={() => gotoProfile(url === "/tweets" ? tweet.user.id : user.id)}
+			>
+				<Image
+					style={styles.avatar}
+					source={{ uri: url === "/tweets" ? tweet.user.avatar : user.avatar }}
+				/>
 			</TouchableOpacity>
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
@@ -109,13 +116,13 @@ export default function TweetsList({
 					onPress={() => gotoSingleTweet(tweet.id)}
 				>
 					<Text style={styles.tweetName} numberOfLines={1}>
-						{tweet.user.name}
+						{url === "/tweets" ? tweet.user.name : user.name}
 					</Text>
 					<Text
 						style={[GlobalStyles.textGray, styles.tweetHandle]}
 						numberOfLines={1}
 					>
-						@{tweet.user.username}
+						@{url === "/tweets" ? tweet.user.username : user.username}
 					</Text>
 					<Text>&middot;</Text>
 					<Text

@@ -21,55 +21,10 @@ export default function ProfileScreen({ route, navigation }) {
 		error,
 	} = useFetch(`/users/${route.params.userId}`);
 
-	/* const DATA = [
-		{
-			id: "1",
-			title: "First Item",
-		},
-		{
-			id: "2",
-			title: "Second Item",
-		},
-		{
-			id: "3",
-			title: "Third Item",
-		},
-		{
-			id: "4",
-			title: "Fourth Item",
-		},
-		{
-			id: "5",
-			title: "Fifth Item",
-		},
-		{
-			id: "6",
-			title: "Sixth Item",
-		},
-		{
-			id: "7",
-			title: "Seventh Item",
-		},
-		{
-			id: "8",
-			title: "Eight Item",
-		},
-		{
-			id: "9",
-			title: "Ninth Item",
-		},
-		{
-			id: "10",
-			title: "Tenth Item",
-		},
-	]; */
-
 	const profileHeader = () => (
 		<View style={GlobalStyles.container}>
 			{status === "error" ? (
 				<Text style={GlobalStyles.textRed}>{error.message}</Text>
-			) : status === "fetching" ? (
-				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<>
 					<Image
@@ -133,12 +88,19 @@ export default function ProfileScreen({ route, navigation }) {
 	);
 
 	return (
-		<TweetsList
-			style={GlobalStyles.container}
-			//data={DATA}
-			ListHeaderComponent={profileHeader}
-			navigation={navigation}
-		/>
+		<>
+			{status === "fetching" ? (
+				<ActivityIndicator size="large" color="#007aff" />
+			) : (
+				<TweetsList
+					url={`/users/${route.params.userId}/tweets`}
+					user={user}
+					style={GlobalStyles.container}
+					ListHeaderComponent={profileHeader}
+					navigation={navigation}
+				/>
+			)}
+		</>
 	);
 }
 
