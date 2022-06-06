@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useReducer, useEffect, useRef } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -24,72 +24,115 @@ export default function TweetsList({
 	newTweet,
 	navigation,
 }) {
-	const [tweets, setTweets] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [isRefreshing, setIsRefreshing] = useState(false);
-	const [page, setPage] = useState(1);
-	const [isEndOfScrolling, setIsEndOfScrolling] = useState(false);
+	const initialState = {
+		status: url ? "loading" : "idle",
+		tweets: null,
+		page: 1,
+		error: null,
+	};
+
+	const [state, dispatch] = useReducer((state, action) => {
+		switch (action.type) {
+			case "IDLE":
+				return { ...initialState, status: "idle" };
+			case "REFRESHING":
+				return { ...state, status: "refreshing", page: 1 };
+			case "LOADED":
+				return { ...state, status: "loaded", tweets: action.payload };
+			case "SCROLLING":
+				return { ...state, status: "scrolling", page: state.page + 1 };
+			case "END":
+				return { ...state, status: "end", page: -1 };
+			case "ERROR":
+				return {
+					status: "error",
+					tweets: null,
+					page: 1,
+					error: action.payload,
+				};
+			default:
+				return state;
+		}
+	}, initialState);
+
 	const flatListRef = useRef();
+	const controller = new AbortController();
 
 	useEffect(() => {
+		if (!url) {
+			dispatch({ type: "IDLE" });
+			return;
+		}
+
 		getAllTweets();
-	}, [page]);
+
+		return function cleanup() {
+			controller.abort();
+		};
+	}, [state.page]);
 
 	useEffect(() => {
-		if (newTweet) {
+		if (!url) {
+			dispatch({ type: "IDLE" });
+			return;
+		} else if (newTweet) {
 			getNewTweet();
 			flatListRef.current.scrollToOffset({ offset: 0 });
 		}
+
+		return function cleanup() {
+			controller.abort();
+		};
 	}, [newTweet]);
 
 	function getAllTweets() {
 		axiosConfig
-			.get(`${url}?page=${page}`)
+			.get(`${url}?page=${state.page}`, { signal: controller.signal })
 			.then((response) => {
-				page === 1
-					? setTweets(response.data.data)
-					: setTweets([...tweets, ...response.data.data]);
-
-				if (!response.data.next_page_url) {
-					setIsEndOfScrolling(true);
+				if (state.page !== -1) {
+					state.page === 1
+						? dispatch({ type: "LOADED", payload: response.data.data })
+						: dispatch({
+								type: "LOADED",
+								payload: [...state.tweets, ...response.data.data],
+						  });
 				}
 
-				setIsLoading(false);
-				setIsRefreshing(false);
+				if (!response.data.next_page_url) {
+					dispatch({ type: "END" });
+				}
 			})
 			.catch((error) => {
-				console.log(error);
-				setIsLoading(false);
-				setIsRefreshing(false);
+				if (error.message !== "canceled") {
+					dispatch({ type: "ERROR", payload: error });
+				}
 			});
 	}
 
 	function getNewTweet() {
-		setPage(1);
-		setIsEndOfScrolling(false);
-		setIsRefreshing(true);
+		dispatch({ type: "REFRESHING" });
 
 		axiosConfig
-			.get(url)
+			.get(url, { signal: controller.signal })
 			.then((response) => {
-				setTweets(response.data.data);
-				setIsRefreshing(false);
+				dispatch({ type: "LOADED", payload: response.data.data });
 			})
 			.catch((error) => {
-				console.log(error);
-				setIsRefreshing(false);
+				if (error.message !== "canceled") {
+					dispatch({ type: "ERROR", payload: error });
+				}
 			});
 	}
 
 	function handleRefresh() {
-		setPage(1);
-		setIsEndOfScrolling(false);
-		setIsRefreshing(true);
+		dispatch({ type: "REFRESHING" });
 		getAllTweets();
 	}
 
 	function handleEnd() {
-		setPage(page + 1);
+		if (state.page !== -1) {
+			dispatch({ type: "SCROLLING" });
+		}
 	}
 
 	function gotoProfile(userId) {
@@ -193,27 +236,29 @@ export default function TweetsList({
 
 	return (
 		<>
-			{isLoading ? (
+			{state.status === "error" ? (
+				<Text style={GlobalStyles.textRed}>{state.error.message}</Text>
+			) : state.status === "loading" ? (
 				<ActivityIndicator size="large" color="#007aff" />
 			) : (
 				<FlatList
 					ref={flatListRef}
 					style={style}
-					data={tweets}
+					data={state.tweets}
 					renderItem={renderItem}
 					keyExtractor={(item, index) => String(index)}
 					ListHeaderComponent={ListHeaderComponent}
 					ItemSeparatorComponent={() => (
 						<View style={GlobalStyles.tweetSeparator} />
 					)}
-					refreshing={isRefreshing}
+					refreshing={state.status === "refreshing" ? true : false}
 					onRefresh={handleRefresh}
 					onEndReached={handleEnd}
 					onEndReachedThreshold={0}
 					ListFooterComponent={() =>
-						!isEndOfScrolling && (
-							<ActivityIndicator size="large" color="#007aff" />
-						)
+						state.status === "end"
+							? true
+							: false || <ActivityIndicator size="large" color="#007aff" />
 					}
 				/>
 			)}

@@ -24,7 +24,7 @@ export default function useFetch(url) {
 	}, initialState);
 
 	useEffect(() => {
-		let cancelRequest = false;
+		const controller = new AbortController();
 
 		if (!url) {
 			dispatch({ type: "IDLE" });
@@ -35,29 +35,21 @@ export default function useFetch(url) {
 			dispatch({ type: "FETCHING" });
 
 			axiosConfig
-				.get(url)
+				.get(url, { signal: controller.signal })
 				.then((response) => {
-					if (cancelRequest) {
-						dispatch({ type: "IDLE" });
-						return;
-					}
-
 					dispatch({ type: "FETCHED", payload: response.data });
 				})
 				.catch((error) => {
-					if (cancelRequest) {
-						dispatch({ type: "IDLE" });
-						return;
+					if (error.message !== "canceled") {
+						dispatch({ type: "ERROR", payload: error });
 					}
-
-					dispatch({ type: "ERROR", payload: error });
 				});
 		}
 
 		fetchData();
 
 		return function cleanup() {
-			cancelRequest = true;
+			controller.abort();
 		};
 	}, [url]);
 
