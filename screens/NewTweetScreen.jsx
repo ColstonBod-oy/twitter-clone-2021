@@ -15,6 +15,7 @@ import axiosConfig from "../utils/axiosConfig";
 export default function NewTweetScreen({ navigation }) {
 	const [tweetText, setTweetText] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState("");
 
 	function sendTweet() {
 		if (tweetText.length === 0) {
@@ -35,63 +36,69 @@ export default function NewTweetScreen({ navigation }) {
 				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.log(error);
+				setError(error.message);
 				setIsLoading(false);
 			});
 	}
 
 	return (
-		<View style={[GlobalStyles.container, styles.newTweetContainer]}>
-			<View
-				style={[
-					GlobalStyles.flexRow,
-					GlobalStyles.alignCenter,
-					GlobalStyles.spaceBetween,
-					styles.tweetButtonContainer,
-				]}
-			>
-				<Text
-					style={
-						tweetText.length > 250
-							? GlobalStyles.textRed
-							: GlobalStyles.textGray
-					}
-				>
-					Characters left: {280 - tweetText.length}
-				</Text>
-				<View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-					{isLoading && (
-						<ActivityIndicator
-							size="small"
-							color="gray"
-							style={{ marginRight: 8 }}
-						/>
-					)}
-					<TouchableOpacity
-						style={styles.tweetButton}
-						onPress={() => sendTweet()}
-						disabled={isLoading}
+		<>
+			{error ? (
+				<Text style={GlobalStyles.textRed}>{error}</Text>
+			) : (
+				<View style={[GlobalStyles.container, styles.newTweetContainer]}>
+					<View
+						style={[
+							GlobalStyles.flexRow,
+							GlobalStyles.alignCenter,
+							GlobalStyles.spaceBetween,
+							styles.tweetButtonContainer,
+						]}
 					>
-						<Text style={styles.tweetButtonText}>Tweet</Text>
-					</TouchableOpacity>
+						<Text
+							style={
+								tweetText.length > 250
+									? GlobalStyles.textRed
+									: GlobalStyles.textGray
+							}
+						>
+							Characters left: {280 - tweetText.length}
+						</Text>
+						<View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
+							{isLoading && (
+								<ActivityIndicator
+									size="small"
+									color="gray"
+									style={{ marginRight: 8 }}
+								/>
+							)}
+							<TouchableOpacity
+								style={styles.tweetButton}
+								onPress={() => sendTweet()}
+								disabled={isLoading}
+							>
+								<Text style={styles.tweetButtonText}>Tweet</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+					<View style={[GlobalStyles.flexRow, styles.tweetBoxContainer]}>
+						<Image
+							style={styles.avatar}
+							source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
+						/>
+						<TextInput
+							style={styles.tweetTextInput}
+							onChangeText={setTweetText}
+							value={tweetText}
+							placeholder="What's happening?"
+							placeholderTextColor="gray"
+							maxLength={280}
+							multiline
+						/>
+					</View>
 				</View>
-			</View>
-			<View style={[GlobalStyles.flexRow, styles.tweetBoxContainer]}>
-				<Image
-					style={styles.avatar}
-					source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
-				/>
-				<TextInput
-					style={styles.tweetTextInput}
-					onChangeText={setTweetText}
-					value={tweetText}
-					placeholder="What's happening?"
-					placeholderTextColor="gray"
-					maxLength={280}
-					multiline
-				/>
-			</View>
-		</View>
+			)}
+		</>
 	);
 }
 
