@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
 import "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -16,6 +16,7 @@ import NotificationsScreen from "./screens/NotificationsScreen";
 import { AuthContext } from "./context/AuthProvider";
 import LogInScreen from "./screens/Auth/LogInScreen";
 import SignUpScreen from "./screens/Auth/SignUpScreen";
+import * as SecureStore from "expo-secure-store";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -103,18 +104,29 @@ const BottomTabNavigator = () => {
 
 export default function Root() {
 	const [isLoading, setIsLoading] = useState(true);
-	const { user } = useContext(AuthContext);
+	const [error, setError] = useState(null);
+	const { user, setUser } = useContext(AuthContext);
 
 	useEffect(() => {
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 2000);
+		SecureStore.getItemAsync("user")
+			.then((userString) => {
+				if (userString) {
+					setUser(JSON.parse(userString));
+				}
+			})
+			.catch((error) => {
+				setError(error);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
 	}, []);
 
 	if (isLoading) {
 		return (
 			<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-				<ActivityIndicator size="large" color="gray" />
+				{error && <Text style={{ color: "red" }}>{error}</Text>}
+				{isLoading && <ActivityIndicator size="large" color="gray" />}
 			</View>
 		);
 	}
