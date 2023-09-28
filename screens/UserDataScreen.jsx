@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthProvider";
 import axiosConfig from "../utils/axiosConfig";
 import format from "date-fns/format";
 
-export default function SearchScreen() {
+export default function UserDataScreen() {
 	const { user } = useContext(AuthContext);
 	const [error, setError] = useState(null);
 	const [userData, setUserData] = useState(null);
@@ -26,7 +26,7 @@ export default function SearchScreen() {
 	}, []);
 
 	return (
-		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+		<View style={styles.userDataContainer}>
 			{error && <Text style={{ color: "red" }}>{error}</Text>}
 			{userData && (
 				<>
@@ -56,5 +56,10 @@ const styles = StyleSheet.create({
 		width: 100,
 		height: 100,
 		borderRadius: 25,
+	},
+	userDataContainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 });

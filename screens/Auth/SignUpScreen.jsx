@@ -1,9 +1,9 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 import React from "react";
 
 export default function SignUpScreen({ navigation }) {
 	return (
-		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+		<View style={styles.signUpContainer}>
 			<Text>Sign Up Screen</Text>
 			<Button
 				title="Log In"
@@ -12,3 +12,11 @@ export default function SignUpScreen({ navigation }) {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	signUpContainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});

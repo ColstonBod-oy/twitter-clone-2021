@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 import { AuthContext } from "../context/AuthProvider";
 import axiosConfig from "../utils/axiosConfig";
 import * as SecureStore from "expo-secure-store";
@@ -8,7 +8,7 @@ export default function SettingsScreen() {
 	const { user, setUser, setIsLoading, setError } = useContext(AuthContext);
 
 	return (
-		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+		<View style={styles.settingsContainer}>
 			<Text>Settings Screen</Text>
 			<Button
 				title="Log Out"
@@ -38,3 +38,11 @@ export default function SettingsScreen() {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	settingsContainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});

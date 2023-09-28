@@ -1,4 +1,10 @@
-import { View, Text, Button, ActivityIndicator } from "react-native";
+import {
+	View,
+	Text,
+	Button,
+	ActivityIndicator,
+	StyleSheet,
+} from "react-native";
 import React, { useContext, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { AuthContext } from "../../context/AuthProvider";
@@ -13,7 +19,7 @@ export default function LogInScreen({ navigation }) {
 		useContext(AuthContext);
 
 	return (
-		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+		<View style={styles.logInContainer}>
 			<Text>Log In Screen</Text>
 			<TextInput
 				onChangeText={setEmail}
@@ -76,3 +82,11 @@ export default function LogInScreen({ navigation }) {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	logInContainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});

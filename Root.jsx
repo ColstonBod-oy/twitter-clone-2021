@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, ActivityIndicator, Text } from "react-native";
+import { View, ActivityIndicator, Text, StyleSheet } from "react-native";
 import "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -11,7 +11,7 @@ import NewTweetScreen from "./screens/NewTweetScreen";
 import TweetScreen from "./screens/TweetScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SettingsScreen from "./screens/SettingsScreen";
-import SearchScreen from "./screens/SearchScreen";
+import UserDataScreen from "./screens/UserDataScreen";
 import NotificationsScreen from "./screens/NotificationsScreen";
 import { AuthContext } from "./context/AuthProvider";
 import LogInScreen from "./screens/Auth/LogInScreen";
@@ -82,7 +82,7 @@ const BottomTabNavigator = () => {
 			/>
 			<Tab.Screen
 				name="Search"
-				component={SearchScreen}
+				component={UserDataScreen}
 				options={{
 					tabBarIcon: ({ color, size }) => (
 						<Ionicons name="search" size={size} color={color} />
@@ -124,7 +124,7 @@ export default function Root() {
 
 	if (isLoading) {
 		return (
-			<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+			<View style={styles.activityIndicatorContainer}>
 				{error && <Text style={{ color: "red" }}>{error}</Text>}
 				{isLoading && <ActivityIndicator size="large" color="gray" />}
 			</View>
@@ -148,3 +148,11 @@ export default function Root() {
 		</>
 	);
 }
+
+const styles = StyleSheet.create({
+	activityIndicatorContainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});
