@@ -69,7 +69,7 @@ export default function NewTweetScreen({ navigation }) {
 								<ActivityIndicator
 									size="small"
 									color="gray"
-									style={{ marginRight: 8 }}
+									style={styles.activityIndicator}
 								/>
 							)}
 							<TouchableOpacity
@@ -106,6 +106,9 @@ const styles = StyleSheet.create({
 	newTweetContainer: {
 		paddingHorizontal: 10,
 		paddingVertical: 12,
+	},
+	activityIndicator: {
+		marginRight: 8,
 	},
 	avatar: {
 		width: 42,

@@ -199,7 +199,7 @@ export default function TweetsList({
 							name="comment"
 							size={22}
 							color="gray"
-							style={{ marginRight: 2 }}
+							style={styles.icon}
 						/>
 						<Text style={GlobalStyles.textGray}>456</Text>
 					</TouchableOpacity>
@@ -208,7 +208,7 @@ export default function TweetsList({
 							name="retweet"
 							size={22}
 							color="gray"
-							style={{ marginRight: 2 }}
+							style={styles.icon}
 						/>
 						<Text style={GlobalStyles.textGray}>32</Text>
 					</TouchableOpacity>
@@ -217,7 +217,7 @@ export default function TweetsList({
 							name="heart"
 							size={22}
 							color="gray"
-							style={{ marginRight: 2 }}
+							style={styles.icon}
 						/>
 						<Text style={GlobalStyles.textGray}>4,456</Text>
 					</TouchableOpacity>
@@ -226,7 +226,7 @@ export default function TweetsList({
 							name={Platform.OS === "ios" ? "share-apple" : "share-google"}
 							size={22}
 							color="gray"
-							style={{ marginRight: 2 }}
+							style={styles.icon}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -292,5 +292,8 @@ const styles = StyleSheet.create({
 	},
 	tweetEngagement: {
 		marginTop: 12,
+	},
+	icon: {
+		marginRight: 2,
 	},
 });
