@@ -2,13 +2,16 @@ import {
 	View,
 	Text,
 	StyleSheet,
+	ActivityIndicator,
 	Alert,
 	Image,
 	TextInput,
 	TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { AuthContext } from "../../context/AuthProvider";
+import axiosConfig from "../../utils/axiosConfig";
 
 export default function SignUpScreen({ navigation }) {
 	const [name, setName] = useState("");
@@ -16,6 +19,8 @@ export default function SignUpScreen({ navigation }) {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [error, setError] = useState(null);
+	const { isLoading, setIsLoading } = useContext(AuthContext);
 	const marginTopBelowHeader = 160 - useHeaderHeight();
 
 	return (
@@ -25,6 +30,7 @@ export default function SignUpScreen({ navigation }) {
 					<Image source={require("../../assets/favicon.png")} />
 				</View>
 				<View style={styles.signUpTextInputContainer}>
+					{error && <Text style={{ color: "red" }}>{error}</Text>}
 					<TextInput
 						style={styles.signUpTextInput}
 						onChangeText={setName}
@@ -72,10 +78,38 @@ export default function SignUpScreen({ navigation }) {
 				<TouchableOpacity
 					style={styles.signUpButton}
 					onPress={() => {
-						Alert.alert("Registered");
+						setIsLoading(true);
+						setError(null);
+
+						axiosConfig
+							.post("/signup", {
+								name,
+								email,
+								username,
+								password,
+								password_confirmation: confirmPassword,
+							})
+							.then((response) => {
+								Alert.alert("User created. Please log in.");
+								navigation.navigate("Log In Screen");
+							})
+							.catch((error) => {
+								const errorKey = Object.keys(error.response.data.errors)[0];
+								setError(error.response.data.errors[errorKey][0]);
+							})
+							.finally(() => {
+								setIsLoading(false);
+							});
 					}}
 				>
 					<Text style={styles.signUpButtonText}>Sign Up</Text>
+					{isLoading && (
+						<ActivityIndicator
+							style={styles.activityIndicator}
+							size="small"
+							color="white"
+						/>
+					)}
 				</TouchableOpacity>
 				<View style={styles.logInContainer}>
 					<Text style={styles.logInText}>Already have an account?</Text>
@@ -133,5 +167,8 @@ const styles = StyleSheet.create({
 	},
 	logoContainer: {
 		alignItems: "center",
+	},
+	activityIndicator: {
+		marginLeft: 8,
 	},
 });

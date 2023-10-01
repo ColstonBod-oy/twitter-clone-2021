@@ -66,7 +66,8 @@ export default function LogInScreen({ navigation }) {
 								SecureStore.setItemAsync("user", JSON.stringify(userResponse));
 							})
 							.catch((error) => {
-								setError(error.response.data.message);
+								const errorKey = Object.keys(error.response.data.errors)[0];
+								setError(error.response.data.errors[errorKey][0]);
 							})
 							.finally(() => {
 								setIsLoading(false);
