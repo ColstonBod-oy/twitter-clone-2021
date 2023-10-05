@@ -75,8 +75,12 @@ const BottomTabNavigator = () => {
 				name="Home2"
 				component={HomeScreen}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="home" size={size} color={color} />
+					tabBarIcon: ({ size, focused }) => (
+						<Ionicons
+							name="home"
+							size={size}
+							color={focused ? "black" : "gray"}
+						/>
 					),
 				}}
 			/>
@@ -84,8 +88,12 @@ const BottomTabNavigator = () => {
 				name="Explore"
 				component={ExploreScreen}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<MaterialIcons name="explore" size={size} color={color} />
+					tabBarIcon: ({ size, focused }) => (
+						<MaterialIcons
+							name="explore"
+							size={size}
+							color={focused ? "black" : "gray"}
+						/>
 					),
 				}}
 			/>
@@ -93,8 +101,12 @@ const BottomTabNavigator = () => {
 				name="Notifications"
 				component={NotificationsScreen}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="notifications" size={size} color={color} />
+					tabBarIcon: ({ size, focused }) => (
+						<Ionicons
+							name="notifications"
+							size={size}
+							color={focused ? "black" : "gray"}
+						/>
 					),
 				}}
 			/>
@@ -126,7 +138,7 @@ export default function Root() {
 		return (
 			<View style={styles.activityIndicatorContainer}>
 				{error && <Text style={{ color: "red" }}>{error}</Text>}
-				{isLoading && <ActivityIndicator size="large" color="gray" />}
+				{isLoading && <ActivityIndicator size="large" color="black" />}
 			</View>
 		);
 	}

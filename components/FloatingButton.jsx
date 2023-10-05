@@ -12,7 +12,7 @@ export default function FloatingButton({ navigation }) {
 			style={styles.floatingButton}
 			onPress={() => gotoNewTweet()}
 		>
-			<AntDesign name="plus" size={24} color="black" />
+			<AntDesign name="plus" size={24} color="white" />
 		</TouchableOpacity>
 	);
 }
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#1d9bf1",
+		backgroundColor: "black",
 		position: "absolute",
 		bottom: 20,
 		right: 12,

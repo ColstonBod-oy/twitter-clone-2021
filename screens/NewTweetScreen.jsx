@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
 	View,
 	Text,
@@ -9,10 +9,12 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 } from "react-native";
+import { AuthContext } from "../helpers/AuthProvider";
 import GlobalStyles from "../styles/GlobalStyles";
 import axiosConfig from "../utils/axiosConfig";
 
 export default function NewTweetScreen({ navigation }) {
+	const { user } = useContext(AuthContext);
 	const [tweetText, setTweetText] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -24,6 +26,10 @@ export default function NewTweetScreen({ navigation }) {
 		}
 
 		setIsLoading(true);
+
+		axiosConfig.defaults.headers.common[
+			"Authorization"
+		] = `Bearer ${user.token}`;
 
 		axiosConfig
 			.post("/tweets", {
@@ -124,7 +130,7 @@ const styles = StyleSheet.create({
 		padding: 10,
 	},
 	tweetButton: {
-		backgroundColor: "#1d9bf1",
+		backgroundColor: "black",
 		paddingHorizontal: 20,
 		paddingVertical: 10,
 		borderRadius: 24,

@@ -90,7 +90,7 @@ export default function ProfileScreen({ route, navigation }) {
 	return (
 		<>
 			{status === "fetching" ? (
-				<ActivityIndicator size="large" color="#007aff" />
+				<ActivityIndicator size="large" color="black" />
 			) : (
 				<TweetsList
 					url={`/users/${route.params.userId}/tweets`}

@@ -28,7 +28,7 @@ export default function TweetScreen({ route, navigation }) {
 			{status === "error" ? (
 				<Text style={GlobalStyles.textRed}>{error.message}</Text>
 			) : status === "fetching" ? (
-				<ActivityIndicator size="large" color="#007aff" />
+				<ActivityIndicator size="large" color="black" />
 			) : (
 				<>
 					<View

@@ -239,7 +239,7 @@ export default function TweetsList({
 			{state.status === "error" ? (
 				<Text style={GlobalStyles.textRed}>{state.error.message}</Text>
 			) : state.status === "loading" ? (
-				<ActivityIndicator size="large" color="#007aff" />
+				<ActivityIndicator size="large" color="black" />
 			) : (
 				<FlatList
 					ref={flatListRef}
@@ -258,7 +258,7 @@ export default function TweetsList({
 					ListFooterComponent={() =>
 						state.status === "end"
 							? true
-							: false || <ActivityIndicator size="large" color="#007aff" />
+							: false || <ActivityIndicator size="large" color="black" />
 					}
 				/>
 			)}
