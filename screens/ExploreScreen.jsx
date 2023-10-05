@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { AuthContext } from "../context/AuthProvider";
+import { AuthContext } from "../helpers/AuthProvider";
 import axiosConfig from "../utils/axiosConfig";
 import format from "date-fns/format";
 
-export default function UserDataScreen() {
+export default function ExploreScreen() {
 	const { user } = useContext(AuthContext);
 	const [error, setError] = useState(null);
 	const [userData, setUserData] = useState(null);

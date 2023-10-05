@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../styles/GlobalStyles";
 import TweetsList from "../components/TweetsList";
 import FloatingButton from "../components/FloatingButton";
 

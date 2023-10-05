@@ -8,7 +8,7 @@ import {
 	Linking,
 	ActivityIndicator,
 } from "react-native";
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../styles/GlobalStyles";
 import TweetsList from "../components/TweetsList";
 import { EvilIcons } from "@expo/vector-icons";
 import format from "date-fns/format";

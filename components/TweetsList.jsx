@@ -9,7 +9,7 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 } from "react-native";
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../styles/GlobalStyles";
 import { EvilIcons } from "@expo/vector-icons";
 import { formatDistanceToNowStrict } from "date-fns";
 import locale from "date-fns/locale/en-US";

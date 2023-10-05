@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator, StyleSheet, Image } from "react-native";
 import React, { useContext, useState } from "react";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { AuthContext } from "../../context/AuthProvider";
+import { AuthContext } from "../../helpers/AuthProvider";
 import axiosConfig from "../../utils/axiosConfig";
 import * as SecureStore from "expo-secure-store";
 import * as Device from "expo-device";

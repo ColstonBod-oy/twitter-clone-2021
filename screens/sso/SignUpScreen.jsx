@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { AuthContext } from "../../context/AuthProvider";
+import { AuthContext } from "../../helpers/AuthProvider";
 import axiosConfig from "../../utils/axiosConfig";
 
 export default function SignUpScreen({ navigation }) {

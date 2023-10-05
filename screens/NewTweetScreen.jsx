@@ -9,7 +9,7 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 } from "react-native";
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../styles/GlobalStyles";
 import axiosConfig from "../utils/axiosConfig";
 
 export default function NewTweetScreen({ navigation }) {

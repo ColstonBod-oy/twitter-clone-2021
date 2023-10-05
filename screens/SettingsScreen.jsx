@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { AuthContext } from "../context/AuthProvider";
+import { AuthContext } from "../helpers/AuthProvider";
 import axiosConfig from "../utils/axiosConfig";
 import * as SecureStore from "expo-secure-store";
 

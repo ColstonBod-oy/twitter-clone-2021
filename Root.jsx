@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, ActivityIndicator, Text, StyleSheet } from "react-native";
 import "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,11 +11,11 @@ import NewTweetScreen from "./screens/NewTweetScreen";
 import TweetScreen from "./screens/TweetScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SettingsScreen from "./screens/SettingsScreen";
-import UserDataScreen from "./screens/UserDataScreen";
+import ExploreScreen from "./screens/ExploreScreen";
 import NotificationsScreen from "./screens/NotificationsScreen";
-import { AuthContext } from "./context/AuthProvider";
-import LogInScreen from "./screens/Auth/LogInScreen";
-import SignUpScreen from "./screens/Auth/SignUpScreen";
+import { AuthContext } from "./helpers/AuthProvider";
+import LogInScreen from "./screens/sso/LogInScreen";
+import SignUpScreen from "./screens/sso/SignUpScreen";
 import * as SecureStore from "expo-secure-store";
 
 const Stack = createStackNavigator();
@@ -81,11 +81,11 @@ const BottomTabNavigator = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="Search"
-				component={UserDataScreen}
+				name="Explore"
+				component={ExploreScreen}
 				options={{
 					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="search" size={size} color={color} />
+						<MaterialIcons name="explore" size={size} color={color} />
 					),
 				}}
 			/>

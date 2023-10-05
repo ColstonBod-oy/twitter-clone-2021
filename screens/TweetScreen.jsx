@@ -7,7 +7,7 @@ import {
 	Image,
 	ActivityIndicator,
 } from "react-native";
-import GlobalStyles from "../constants/GlobalStyles";
+import GlobalStyles from "../styles/GlobalStyles";
 import { Entypo, EvilIcons } from "@expo/vector-icons";
 import format from "date-fns/format";
 import useFetch from "../utils/hooks/useFetch";
