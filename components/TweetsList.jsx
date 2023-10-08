@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useRef } from "react";
+import React, { useReducer, useEffect, useRef, useContext } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -15,10 +15,11 @@ import { formatDistanceToNowStrict } from "date-fns";
 import locale from "date-fns/locale/en-US";
 import formatDistance from "../utils/customFormatDistance";
 import axiosConfig from "../utils/axiosConfig";
+import { AuthContext } from "../helpers/AuthProvider";
 
 export default function TweetsList({
 	url,
-	user,
+	profile,
 	style,
 	ListHeaderComponent,
 	newTweet,
@@ -85,7 +86,15 @@ export default function TweetsList({
 		};
 	}, [newTweet]);
 
+	const { user } = useContext(AuthContext);
+
 	function getAllTweets() {
+		if (url === "/tweets") {
+			axiosConfig.defaults.headers.common[
+				"Authorization"
+			] = `Bearer ${user.token}`;
+		}
+
 		axiosConfig
 			.get(`${url}?page=${state.page}`, { signal: controller.signal })
 			.then((response) => {
@@ -111,6 +120,12 @@ export default function TweetsList({
 
 	function getNewTweet() {
 		dispatch({ type: "REFRESHING" });
+
+		if (url === "/tweets") {
+			axiosConfig.defaults.headers.common[
+				"Authorization"
+			] = `Bearer ${user.token}`;
+		}
 
 		axiosConfig
 			.get(url, { signal: controller.signal })
@@ -146,26 +161,48 @@ export default function TweetsList({
 	const renderItem = ({ item: tweet }) => (
 		<View style={[GlobalStyles.flexRow, styles.tweetContainer]}>
 			<TouchableOpacity
-				onPress={() => gotoProfile(url === "/tweets" ? tweet.user.id : user.id)}
+				onPress={() =>
+					gotoProfile(
+						url === "/tweets" || url === "/tweets_all"
+							? tweet.user.id
+							: profile.id
+					)
+				}
 			>
 				<Image
 					style={styles.avatar}
-					source={{ uri: url === "/tweets" ? tweet.user.avatar : user.avatar }}
+					source={{
+						uri:
+							url === "/tweets" || url === "/tweets_all"
+								? tweet.user.avatar
+								: profile.avatar,
+					}}
 				/>
 			</TouchableOpacity>
 			<View style={{ flex: 1 }}>
 				<TouchableOpacity
 					style={GlobalStyles.flexRow}
-					onPress={() => gotoSingleTweet(tweet.id)}
+					onPress={() =>
+						gotoProfile(
+							url === "/tweets" || url === "/tweets_all"
+								? tweet.user.id
+								: profile.id
+						)
+					}
 				>
 					<Text style={styles.tweetName} numberOfLines={1}>
-						{url === "/tweets" ? tweet.user.name : user.name}
+						{url === "/tweets" || url === "/tweets_all"
+							? tweet.user.name
+							: profile.name}
 					</Text>
 					<Text
 						style={[GlobalStyles.textGray, styles.tweetHandle]}
 						numberOfLines={1}
 					>
-						@{url === "/tweets" ? tweet.user.username : user.username}
+						@
+						{url === "/tweets" || url === "/tweets_all"
+							? tweet.user.username
+							: profile.username}
 					</Text>
 					<Text>&middot;</Text>
 					<Text

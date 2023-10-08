@@ -1,65 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { AuthContext } from "../helpers/AuthProvider";
-import axiosConfig from "../utils/axiosConfig";
-import format from "date-fns/format";
+import React from "react";
+import { View } from "react-native";
+import GlobalStyles from "../styles/GlobalStyles";
+import TweetsList from "../components/TweetsList";
+import FloatingButton from "../components/FloatingButton";
 
-export default function ExploreScreen() {
-	const { user } = useContext(AuthContext);
-	const [error, setError] = useState(null);
-	const [userData, setUserData] = useState(null);
-
-	useEffect(() => {
-		axiosConfig.defaults.headers.common[
-			"Authorization"
-		] = `Bearer ${user.token}`;
-
-		axiosConfig
-			.get("/user")
-			.then((response) => {
-				setUserData(response.data);
-				setError(null);
-			})
-			.catch((error) => {
-				setError(error.response.data.message);
-			});
-	}, []);
-
+export default function ExploreScreen({ route, navigation }) {
 	return (
-		<View style={styles.userDataContainer}>
-			{error && <Text style={{ color: "red" }}>{error}</Text>}
-			{userData && (
-				<>
-					<Image style={styles.avatar} source={{ uri: userData.avatar }} />
-					<Text>Name: {userData.name}</Text>
-					<Text>Username: {userData.username}</Text>
-					<Text>Email: {userData.email}</Text>
-					<Text>
-						Verified at:{" "}
-						{format(new Date(userData.email_verified_at), "MMM dd yyyy")}
-					</Text>
-					<Text>Location: {userData.location}</Text>
-					<Text>
-						Joined at: {format(new Date(userData.created_at), "MMM dd yyyy")}
-					</Text>
-					<Text>
-						Updated at: {format(new Date(userData.updated_at), "MMM dd yyyy")}
-					</Text>
-				</>
-			)}
+		<View style={GlobalStyles.container}>
+			<TweetsList
+				url={"/tweets_all"}
+				newTweet={route.params?.newTweet}
+				navigation={navigation}
+			/>
+			<FloatingButton navigation={navigation} />
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	avatar: {
-		width: 100,
-		height: 100,
-		borderRadius: 25,
-	},
-	userDataContainer: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-});

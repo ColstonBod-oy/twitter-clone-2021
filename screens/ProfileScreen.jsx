@@ -17,7 +17,7 @@ import useFetch from "../utils/hooks/useFetch";
 export default function ProfileScreen({ route, navigation }) {
 	const {
 		status,
-		data: user,
+		data: profile,
 		error,
 	} = useFetch(`/users/${route.params.userId}`);
 
@@ -40,34 +40,34 @@ export default function ProfileScreen({ route, navigation }) {
 							styles.avatarContainer,
 						]}
 					>
-						<Image style={styles.avatar} source={{ uri: user.avatar }} />
+						<Image style={styles.avatar} source={{ uri: profile.avatar }} />
 						<TouchableOpacity style={styles.followButton}>
 							<Text style={styles.followButtonText}>Follow</Text>
 						</TouchableOpacity>
 					</View>
 					<View style={styles.profileContainer}>
-						<Text style={styles.profileName}>{user.name}</Text>
-						<Text style={styles.profileHandle}>@{user.username}</Text>
+						<Text style={styles.profileName}>{profile.name}</Text>
+						<Text style={styles.profileHandle}>@{profile.username}</Text>
 					</View>
-					<View style={styles.descriptionContainer}>
-						<Text style={styles.description}>{user.profile}</Text>
+					<View style={styles.introContainer}>
+						<Text style={styles.intro}>{profile.intro}</Text>
 					</View>
 					<View style={[GlobalStyles.flexRow, styles.locationContainer]}>
 						<EvilIcons name="location" size={24} color="gray" />
-						<Text style={GlobalStyles.textGray}>{user.location}</Text>
+						<Text style={GlobalStyles.textGray}>{profile.location}</Text>
 					</View>
 					<View style={[GlobalStyles.flexRow, styles.linkContainer]}>
 						<TouchableOpacity
 							style={GlobalStyles.flexRow}
-							onPress={() => Linking.openURL(user.link)}
+							onPress={() => Linking.openURL(profile.link)}
 						>
 							<EvilIcons name="link" size={24} color="gray" />
-							<Text style={GlobalStyles.textBlue}>{user.linkText}</Text>
+							<Text style={GlobalStyles.textBlue}>{profile.linkText}</Text>
 						</TouchableOpacity>
 						<View style={[GlobalStyles.ml4, GlobalStyles.flexRow]}>
 							<EvilIcons name="calendar" size={24} color="gray" />
 							<Text style={GlobalStyles.textGray}>
-								Joined {format(new Date(user.created_at), "MMM yyyy")}
+								Joined {format(new Date(profile.created_at), "MMM yyyy")}
 							</Text>
 						</View>
 					</View>
@@ -94,7 +94,7 @@ export default function ProfileScreen({ route, navigation }) {
 			) : (
 				<TweetsList
 					url={`/users/${route.params.userId}/tweets`}
-					user={user}
+					profile={profile}
 					style={GlobalStyles.container}
 					ListHeaderComponent={profileHeader}
 					navigation={navigation}
@@ -143,10 +143,10 @@ const styles = StyleSheet.create({
 		color: "gray",
 		marginTop: 1,
 	},
-	description: {
+	intro: {
 		lineHeight: 22,
 	},
-	descriptionContainer: {
+	introContainer: {
 		paddingHorizontal: 10,
 		marginTop: 8,
 	},
