@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -13,6 +13,8 @@ import TweetsList from "../components/TweetsList";
 import { EvilIcons } from "@expo/vector-icons";
 import format from "date-fns/format";
 import useFetch from "../utils/hooks/useFetch";
+import axiosConfig from "../utils/axiosConfig";
+import { AuthContext } from "../helpers/AuthProvider";
 
 export default function ProfileScreen({ route, navigation }) {
 	const {
@@ -20,6 +22,45 @@ export default function ProfileScreen({ route, navigation }) {
 		data: profile,
 		error,
 	} = useFetch(`/users/${route.params.userId}`);
+	const [isFollowing, setIsFollowing] = useState(false);
+	const { user } = useContext(AuthContext);
+
+	useEffect(() => {
+		axiosConfig.defaults.headers.common[
+			"Authorization"
+		] = `Bearer ${user.token}`;
+
+		axiosConfig
+			.get(`/is_following/${route.params.userId}`)
+			.then((response) => {
+				setIsFollowing(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}, []);
+
+	function followUser(userId) {
+		axiosConfig
+			.post(`/follow/${userId}`)
+			.then((response) => {
+				setIsFollowing(true);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
+
+	function unfollowUser(userId) {
+		axiosConfig
+			.delete(`/unfollow/${userId}`)
+			.then((response) => {
+				setIsFollowing(false);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
 
 	const profileHeader = () => (
 		<View style={GlobalStyles.container}>
@@ -41,9 +82,25 @@ export default function ProfileScreen({ route, navigation }) {
 						]}
 					>
 						<Image style={styles.avatar} source={{ uri: profile.avatar }} />
-						<TouchableOpacity style={styles.followButton}>
-							<Text style={styles.followButtonText}>Follow</Text>
-						</TouchableOpacity>
+						{user.id !== route.params.userId && (
+							<View>
+								{isFollowing ? (
+									<TouchableOpacity
+										style={styles.followButton}
+										onPress={() => unfollowUser(route.params.userId)}
+									>
+										<Text style={styles.followButtonText}>Unfollow</Text>
+									</TouchableOpacity>
+								) : (
+									<TouchableOpacity
+										style={styles.followButton}
+										onPress={() => followUser(route.params.userId)}
+									>
+										<Text style={styles.followButtonText}>Follow</Text>
+									</TouchableOpacity>
+								)}
+							</View>
+						)}
 					</View>
 					<View style={styles.profileContainer}>
 						<Text style={styles.profileName}>{profile.name}</Text>
