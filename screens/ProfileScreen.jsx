@@ -24,7 +24,7 @@ export default function ProfileScreen({ route, navigation }) {
 	} = useFetch(`/users/${route.params.userId}`);
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [isLoadingFollow, setIsLoadingFollow] = useState(false);
-	const [isDisabled, setIsDisabled] = useState(false);
+	const [buttonColor, setButtonColor] = useState("black");
 	const { user } = useContext(AuthContext);
 
 	useEffect(() => {
@@ -44,7 +44,7 @@ export default function ProfileScreen({ route, navigation }) {
 
 	function followUser(userId) {
 		setIsLoadingFollow(true);
-		setIsDisabled(true);
+		setButtonColor("gray");
 
 		axiosConfig
 			.post(`/follow/${userId}`)
@@ -56,13 +56,13 @@ export default function ProfileScreen({ route, navigation }) {
 			})
 			.finally(() => {
 				setIsLoadingFollow(false);
-				setIsDisabled(false);
+				setButtonColor("black");
 			});
 	}
 
 	function unfollowUser(userId) {
 		setIsLoadingFollow(true);
-		setIsDisabled(true);
+		setButtonColor("gray");
 
 		axiosConfig
 			.delete(`/unfollow/${userId}`)
@@ -74,7 +74,7 @@ export default function ProfileScreen({ route, navigation }) {
 			})
 			.finally(() => {
 				setIsLoadingFollow(false);
-				setIsDisabled(false);
+				setButtonColor("black");
 			});
 	}
 
@@ -102,8 +102,11 @@ export default function ProfileScreen({ route, navigation }) {
 							<View>
 								{isFollowing ? (
 									<TouchableOpacity
-										style={styles.followButton}
-										disabled={isDisabled}
+										style={[
+											{ backgroundColor: buttonColor },
+											styles.followButton,
+										]}
+										disabled={isLoadingFollow}
 										onPress={() => unfollowUser(route.params.userId)}
 									>
 										{isLoadingFollow ? (
@@ -114,8 +117,11 @@ export default function ProfileScreen({ route, navigation }) {
 									</TouchableOpacity>
 								) : (
 									<TouchableOpacity
-										style={styles.followButton}
-										disabled={isDisabled}
+										style={[
+											{ backgroundColor: buttonColor },
+											styles.followButton,
+										]}
+										disabled={isLoadingFollow}
 										onPress={() => followUser(route.params.userId)}
 									>
 										{isLoadingFollow ? (
@@ -205,7 +211,6 @@ const styles = StyleSheet.create({
 		marginTop: -34,
 	},
 	followButton: {
-		backgroundColor: "#0f1418",
 		paddingHorizontal: 20,
 		paddingVertical: 10,
 		borderRadius: 24,

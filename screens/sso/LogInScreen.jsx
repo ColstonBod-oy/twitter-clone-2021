@@ -11,6 +11,7 @@ export default function LogInScreen({ navigation }) {
 	const [password, setPassword] = useState("");
 	const { setUser, isLoading, setIsLoading, error, setError } =
 		useContext(AuthContext);
+	const [buttonColor, setButtonColor] = useState("black");
 
 	return (
 		<View style={styles.logInContainer}>
@@ -41,10 +42,12 @@ export default function LogInScreen({ navigation }) {
 					/>
 				</View>
 				<TouchableOpacity
-					style={styles.logInButton}
+					style={[{ backgroundColor: buttonColor }, styles.logInButton]}
+					disabled={isLoading}
 					onPress={() => {
 						setIsLoading(true);
 						setError(null);
+						setButtonColor("gray");
 
 						axiosConfig
 							.post("/login", {
@@ -71,6 +74,7 @@ export default function LogInScreen({ navigation }) {
 							})
 							.finally(() => {
 								setIsLoading(false);
+								setButtonColor("black");
 							});
 					}}
 				>
@@ -124,7 +128,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		justifyContent: "center",
-		backgroundColor: "black",
 	},
 	logInButtonText: {
 		color: "white",

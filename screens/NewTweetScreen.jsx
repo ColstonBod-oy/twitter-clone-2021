@@ -17,6 +17,7 @@ export default function NewTweetScreen({ navigation }) {
 	const { user } = useContext(AuthContext);
 	const [tweetText, setTweetText] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [buttonColor, setButtonColor] = useState("black");
 	const [error, setError] = useState("");
 
 	function sendTweet() {
@@ -26,6 +27,7 @@ export default function NewTweetScreen({ navigation }) {
 		}
 
 		setIsLoading(true);
+		setButtonColor("gray");
 
 		axiosConfig.defaults.headers.common[
 			"Authorization"
@@ -39,11 +41,13 @@ export default function NewTweetScreen({ navigation }) {
 				navigation.navigate("Home2", {
 					newTweet: response.data.created_at,
 				});
-				setIsLoading(false);
 			})
 			.catch((error) => {
 				setError(error.message);
+			})
+			.finally(() => {
 				setIsLoading(false);
+				setButtonColor("black");
 			});
 	}
 
@@ -71,19 +75,16 @@ export default function NewTweetScreen({ navigation }) {
 							Characters left: {280 - tweetText.length}
 						</Text>
 						<View style={[GlobalStyles.flexRow, GlobalStyles.alignCenter]}>
-							{isLoading && (
-								<ActivityIndicator
-									size="small"
-									color="gray"
-									style={styles.activityIndicator}
-								/>
-							)}
 							<TouchableOpacity
-								style={styles.tweetButton}
+								style={[{ backgroundColor: buttonColor }, styles.tweetButton]}
 								onPress={() => sendTweet()}
 								disabled={isLoading}
 							>
-								<Text style={styles.tweetButtonText}>Tweet</Text>
+								{isLoading ? (
+									<ActivityIndicator size="small" color="white" />
+								) : (
+									<Text style={styles.tweetButtonText}>Tweet</Text>
+								)}
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -113,9 +114,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		paddingVertical: 12,
 	},
-	activityIndicator: {
-		marginRight: 8,
-	},
 	avatar: {
 		width: 42,
 		height: 42,
@@ -130,7 +128,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 	},
 	tweetButton: {
-		backgroundColor: "black",
 		paddingHorizontal: 20,
 		paddingVertical: 10,
 		borderRadius: 24,

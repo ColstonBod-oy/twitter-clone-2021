@@ -21,11 +21,11 @@ export default function SignUpScreen({ navigation }) {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState(null);
 	const { isLoading, setIsLoading } = useContext(AuthContext);
-	const marginTopBelowHeader = 160 - useHeaderHeight();
+	const [buttonColor, setButtonColor] = useState("black");
 
 	return (
 		<View style={styles.signUpContainer}>
-			<View style={{ marginTop: marginTopBelowHeader, width: 260 }}>
+			<View style={{ marginTop: 160 - useHeaderHeight(), width: 260 }}>
 				<View style={styles.logoContainer}>
 					<Image source={require("../../assets/favicon.png")} />
 				</View>
@@ -76,10 +76,12 @@ export default function SignUpScreen({ navigation }) {
 					/>
 				</View>
 				<TouchableOpacity
-					style={styles.signUpButton}
+					style={[{ backgroundColor: buttonColor }, styles.signUpButton]}
+					disabled={isLoading}
 					onPress={() => {
 						setIsLoading(true);
 						setError(null);
+						setButtonColor("gray");
 
 						axiosConfig
 							.post("/signup", {
@@ -99,6 +101,7 @@ export default function SignUpScreen({ navigation }) {
 							})
 							.finally(() => {
 								setIsLoading(false);
+								setButtonColor("black");
 							});
 					}}
 				>
@@ -148,7 +151,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		justifyContent: "center",
-		backgroundColor: "black",
 	},
 	signUpButtonText: {
 		color: "white",

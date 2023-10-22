@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { AuthContext } from "../helpers/AuthProvider";
 import axiosConfig from "../utils/axiosConfig";
@@ -9,15 +9,18 @@ import { useHeaderHeight } from "@react-navigation/elements";
 export default function SettingsScreen() {
 	const { user, setUser, isLoading, setIsLoading, setError } =
 		useContext(AuthContext);
+	const [buttonColor, setButtonColor] = useState("black");
 
 	return (
 		<View style={styles.settingsContainer}>
 			<View style={{ marginTop: -useHeaderHeight(), width: 260 }}>
 				<TouchableOpacity
-					style={styles.logOutButton}
+					style={[{ backgroundColor: buttonColor }, styles.logOutButton]}
+					disabled={isLoading}
 					onPress={() => {
 						setIsLoading(true);
 						setError(null);
+						setButtonColor("gray");
 
 						axiosConfig.defaults.headers.common[
 							"Authorization"
@@ -35,6 +38,7 @@ export default function SettingsScreen() {
 								setUser(null);
 								SecureStore.deleteItemAsync("user");
 								setIsLoading(false);
+								setButtonColor("black");
 							});
 					}}
 				>
@@ -65,7 +69,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		justifyContent: "center",
-		backgroundColor: "black",
 	},
 	logOutButtonText: {
 		color: "white",
