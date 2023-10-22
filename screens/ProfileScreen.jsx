@@ -23,6 +23,8 @@ export default function ProfileScreen({ route, navigation }) {
 		error,
 	} = useFetch(`/users/${route.params.userId}`);
 	const [isFollowing, setIsFollowing] = useState(false);
+	const [isLoadingFollow, setIsLoadingFollow] = useState(false);
+	const [isDisabled, setIsDisabled] = useState(false);
 	const { user } = useContext(AuthContext);
 
 	useEffect(() => {
@@ -41,6 +43,9 @@ export default function ProfileScreen({ route, navigation }) {
 	}, []);
 
 	function followUser(userId) {
+		setIsLoadingFollow(true);
+		setIsDisabled(true);
+
 		axiosConfig
 			.post(`/follow/${userId}`)
 			.then((response) => {
@@ -48,10 +53,17 @@ export default function ProfileScreen({ route, navigation }) {
 			})
 			.catch((error) => {
 				console.log(error);
+			})
+			.finally(() => {
+				setIsLoadingFollow(false);
+				setIsDisabled(false);
 			});
 	}
 
 	function unfollowUser(userId) {
+		setIsLoadingFollow(true);
+		setIsDisabled(true);
+
 		axiosConfig
 			.delete(`/unfollow/${userId}`)
 			.then((response) => {
@@ -59,6 +71,10 @@ export default function ProfileScreen({ route, navigation }) {
 			})
 			.catch((error) => {
 				console.log(error);
+			})
+			.finally(() => {
+				setIsLoadingFollow(false);
+				setIsDisabled(false);
 			});
 	}
 
@@ -87,16 +103,26 @@ export default function ProfileScreen({ route, navigation }) {
 								{isFollowing ? (
 									<TouchableOpacity
 										style={styles.followButton}
+										disabled={isDisabled}
 										onPress={() => unfollowUser(route.params.userId)}
 									>
-										<Text style={styles.followButtonText}>Unfollow</Text>
+										{isLoadingFollow ? (
+											<ActivityIndicator size="small" color="white" />
+										) : (
+											<Text style={styles.followButtonText}>Unfollow</Text>
+										)}
 									</TouchableOpacity>
 								) : (
 									<TouchableOpacity
 										style={styles.followButton}
+										disabled={isDisabled}
 										onPress={() => followUser(route.params.userId)}
 									>
-										<Text style={styles.followButtonText}>Follow</Text>
+										{isLoadingFollow ? (
+											<ActivityIndicator size="small" color="white" />
+										) : (
+											<Text style={styles.followButtonText}>Follow</Text>
+										)}
 									</TouchableOpacity>
 								)}
 							</View>
