@@ -5,8 +5,9 @@ import axiosConfig from "../utils/axiosConfig";
 import * as SecureStore from "expo-secure-store";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { CommonActions } from "@react-navigation/native";
 
-export default function SettingsScreen() {
+export default function SettingsScreen({ navigation }) {
 	const { user, setUser, isLoading, setIsLoading, setError } =
 		useContext(AuthContext);
 	const [buttonColor, setButtonColor] = useState("black");
@@ -35,6 +36,13 @@ export default function SettingsScreen() {
 								setError(error.response.data.message);
 							})
 							.finally(() => {
+								navigation.dispatch(
+									CommonActions.reset({
+										index: 0,
+										routes: [{ name: "Home" }],
+									})
+								);
+
 								setUser(null);
 								SecureStore.deleteItemAsync("user");
 								setIsLoading(false);
